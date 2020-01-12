@@ -13,6 +13,8 @@
     "ciqu-react-calendar": "^1.0.2",
     "connected-react-router": "^6.5.2",
     "echarts-for-react": "^2.0.15-beta.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "gh-pages": "^2.1.1",
     "history": "^4.10.1",
     "i": "^0.3.6",

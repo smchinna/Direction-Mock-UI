@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Component: App App renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: Button Button renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: CheckBox CheckBox renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: InputCom InputCom renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: ModalPopup ModalPopup renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: Panel Panel renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: PanelBody PanelBody renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Component: PanelHeader PanelHeader renders with default props 1`] = `ShallowWrapper {}`;
+
+exports[`Main App Render without Cash 1`] = `ShallowWrapper {}`;
