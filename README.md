@@ -1,4 +1,32 @@
+## Project overview:
+
+  Making UI for the Public Transport Details on California-Northern using ReactJS.
+  
+  In this project mainly focused on the to get in-between places name when seaching the XXX(from) to YYY(Destination).
+  
+  **HOSTED LIVE URL(netlify):  https://vigorous-payne-3e778a.netlify.com/**
+
+## Project Functionalities:
+
+  ### Main Page:
+    *This page contains dropdown for to select from location, inbetween-stops(optional) and destination.
+    
+## Important Functional Aspects:
+   ### Main Page:
+     *Destination dropdown displayed once you select the dropdown for the from and inbetween-stops(optional)
+  
+ ### Technolgies Overview:
+      ReactJs - Library (Component based approach to make UI)
+      Redux - State Management
+      Sagas - Middleware for the state management
+      Styled Components - CSS (Component based CSS)
+      NEXTBUS - Public Transport API
+      Netlify - Free hosting
+   
+## Basic Installation:  
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ 
+### `yarn install`
 
 ## Available Scripts
 
