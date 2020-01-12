@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = '';
+const BASE_URL = 'https://cors-anywhere.herokuapp.com/http://webservices.nextbus.com/';
 
 const instance = axios.create({
   baseURL: BASE_URL
@@ -14,13 +14,8 @@ instance.interceptors.request.use(
 
 // configuration parse
 const parseConfig = (config) => {
-  //let token = splitCookie("auth_token");
-  const token =
-    localStorage && localStorage.getItem('auth_token')
-      ? localStorage.getItem('auth_token')
-      : '';
-  const configuration = { ...config };
-  configuration.headers.Authorization = token;
+  let configuration = { ...config };  
+  configuration.headers = {'Access-Control-Allow-Origin': '*'}
   return configuration;
 };
 
@@ -38,7 +33,7 @@ instance.interceptors.response.use(
 
 // parse response
 const parseBody = (response) => {
-  if (response.data.status_code === 200) {
+  if (response.data) {
     return response.data;
   } else {
     return parseError(response.data);

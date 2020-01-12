@@ -1,10 +1,10 @@
 import { all, fork } from 'redux-saga/effects';
 
-import authSagas from './authSagas';
+import routeSagas from './routeSagas';
 
 export default function* rootSaga(getState) {
   yield all([
-    fork(authSagas)
+    fork(routeSagas)
   ]);
 }
 

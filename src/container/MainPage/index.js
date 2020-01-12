@@ -1,234 +1,195 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCarAlt, faPlane, faBicycle, faWalking, faBus  } from '@fortawesome/free-solid-svg-icons';
-// import Calendar from 'ciqu-react-calendar';
 import { connect } from 'react-redux';
-import PlacesAutocomplete, {
-  geocodeByAddress,
-  getLatLng,
-} from 'react-places-autocomplete';
-
-/**Components */
-import InputCom from '../../components/InputCom';
-import CheckBox from '../../components/CheckBox';
-import Button from '../../components/Button';
+import Dropdown from 'react-dropdown'
+import 'react-dropdown/style.css';
+import { FaArrowAltCircleDown } from 'react-icons/fa';
 
 /**Styles */
 import {
-  LoginBox, LoginHeader, BrandLogo, SignInBox, RememberBox, IconWrapper, IconFlex
+  Box, FlexBox, CardList
 } from './styles';
 
-import { fetchRegisterAPI } from '../../redux/actions';
+import Button from '../../components/Button';
+
+import { fetchRouteAPI, fetchDirectionsAPI } from '../../redux/actions';
 
 class MainPage extends React.Component {
 
   constructor() {
     super();
     this.state = {
-      name: '',
-      email: '',
-      password: '',
-      confirmPass: '',
-      rememberMe: false
+      stop: '',
+      from: '',
+      destinationIndex: null,
+      destionation: null
     }
   }
 
-  changeInput = (e, key) => {
+  componentDidMount() {
+    const { fetchRouteAPI } = this.props;
+    fetchRouteAPI();
+  }
+
+  changeDropDown = (e, key) => {
     this.setState({
-      [key]: e.target.value
+      [key]: e,
+      destinationIndex: null,
+      destionation: null
     })
   }
 
-  changeCheckBox = () => {
-    this.setState({
-      rememberMe: !this.state.rememberMe
-    })
-  }
-
-  changeStartDate = (date) => {
-    this.setState({
-      startDate: date
-    })
-  }
-
-  changeEndDate = (date) => {
-    this.setState({
-      endDate: date
-    })
-  }
-
-  getInput = (obj) => {
+  getDropdownUI = (key, option, placeholder) => {
     return (
-      <InputCom
-        type={obj.type}
-        placeholder={obj.placeHolder}
-        onChange={(e) => this.changeInput(e, obj.key)}
-        value={obj.value}
-        filled={obj.value && obj.value.trim() !== ''}
+      <Dropdown 
+        options={option} 
+        value={this.state[key]} 
+        onChange={(e) => this.changeDropDown(e, key)} 
+        placeholder={placeholder}
       />
     )
   }
 
-  registerUI = () => {
-    const { password, confirmPass, email, name} = this.state;
-    let obj = {
-      "name": name,
-      "email": email,
-      "password": password,
-      "confirm_pass": confirmPass,
-    }
-    const { registerAction } = this.props;
-    registerAction(obj)
-  }
-
-  // getLoginUI = () => {
-  //   const { name, email, password, confirmPass } = this.state;
-  //   let inputData = [
-  //     {
-  //       type: 'text',
-  //       placeHolder: 'Name',
-  //       key: 'organisationName',
-  //       value: name,
-  //       icon: faUser
-  //     },
-  //     {
-  //       type: 'text',
-  //       placeHolder: 'Admin email',
-  //       key: 'email',
-  //       value: email,
-  //       icon: faEnvelope
-  //     },
-  //     {
-  //       type: 'password',
-  //       placeHolder: 'Password',
-  //       key: 'password',
-  //       value: password,
-  //       icon: faKey
-  //     },
-  //     {
-  //       type: 'password',
-  //       placeHolder: 'confirm Password',
-  //       key: 'confirm_password',
-  //       value: confirmPass,
-  //       icon: faKey
-  //     }
-  //   ]
-  //   return (
-  //     <SignInBox>
-  //       {inputData.map((obj, index) => (
-  //         <div className="marginBetGrid" key={index}>
-  //           {this.getInput(obj)}
-  //           {obj.icon &&
-  //             <span className="icon">
-  //               <FontAwesomeIcon icon={obj.icon} />
-  //             </span>
-  //           }
-  //         </div>
-  //       ))}
-  //       {/* <div className="marginBetGrid">
-  //         <DatePicker
-  //           value={startDate}
-  //           onChange={this.changeStartDate}
-  //           className="calendarUI"
-  //         />        
-  //       </div>
-  //       <div className="marginBetGrid">
-  //         <DatePicker
-  //           value={endDate}
-  //           onChange={this.changeEndDate}
-  //           className="calendarUI"
-  //           name="End Date"
-  //         />
-  //       </div>   */}
-  //       {this.getRememberMeUI()}
-  //       {this.getSignButton()}
-  //     </SignInBox>
-  //   )
-  // }
-
-  getSignButton = () => {
-    return (
-      <div className="marginBetGrid">
-        <Button onClick={() => this.registerUI()}>
-          Sign Up
-        </Button>
-      </div>
-    )
-  }
-
-  getRememberMeUI = () => {
-    const { rememberMe } = this.state;
-    return (
-      <div className="marginBetGrid">
-        <RememberBox>
-          <CheckBox checked={rememberMe} disabled={false} changeFunc={this.changeCheckBox} params="rememberMe">
-            Sign Up, you agree to our <span>Terms</span> and that you have read our <span>Data Policy</span>, including our <span>Cookie Use</span>.
-          </CheckBox>
-        </RememberBox>
-      </div>
-    )
-  }
-
-  changeRoute = (url) => {
-    const { history } = this.props;
-    history.push(url);
-  }
-
-  getRootUI = () => {
-    let data = [
-      {
-        type: 'cycle',
-        icon: faBicycle
-      },
-      {
-        type: 'walking',
-        icon: faWalking
-      },
-      {
-        type: 'bus',
-        icon: faBus
-      },
-      {
-        type: 'car',
-        icon: faCarAlt
-      },
-      {
-        type: 'plane',
-        icon: faPlane
+  submit = () => {
+    const { from, stop } = this.state;
+    const { fetchDirectionsAPI } = this.props;
+    if(from && from.value) {
+      let obj = {
+        route: from.value
       }
-    ]
+      if(stop && stop.value) {
+        obj.stop = stop.value
+      }
+      fetchDirectionsAPI(obj)
+    }
+  }
+
+  changeDestIndex = (e) => {
+    console.log(e)
+    this.setState({
+      destionation: e,
+      destinationIndex: e.value
+    })
+  }
+
+  listOfDestUI = () => {
+    const { listOfDestination } = this.props;
+    const { destionation } = this.state;
+    let option = (listOfDestination && listOfDestination.options) ? listOfDestination.options : [];
+    console.log(destionation)
+    return (
+      <div className="margin-top-drop">
+        <div className="title">Destination</div>
+        <Dropdown 
+          options={option} 
+          value={destionation} 
+          onChange={(e) => this.changeDestIndex(e)} 
+          placeholder={"Select destionation"}
+        />
+      </div>
+    )
+  }
+
+  getDestionationDropUI = () => {
+    const { waitForDest, calledAPI } = this.props;
+    if(calledAPI) {
+      if(waitForDest) {
+        return (
+          <div>Wait for destination API</div>
+        )
+      } else {
+        return this.listOfDestUI();
+      }
+    } else {
+      return <></>
+    }
+  }
+
+  getRouteUI = () => {
+    const { from, destionation, destinationIndex }  = this.state;
+    const { listOfDestination } = this.props;
+    let routes = listOfDestination.directions[destinationIndex];
+    console.log(routes)
     return(
-      <IconFlex>
-        { data.map((obj, index) => (
-          <IconWrapper icon={obj.icon} />
-        ))}
-      </IconFlex>
+      <FlexBox>
+        <Box>
+          <div className="header-box"> 
+            Route Details
+          </div>
+          <div className="margin-top-drop scroll-box">
+            <CardList >
+              {from.label} (From)
+            </CardList>
+            <CardList noBg={1}>
+              <FaArrowAltCircleDown />
+            </CardList>
+           {routes && routes.stop && routes.stop.map((obj, index) => (
+              <>
+                <CardList key={index}>
+                  {obj.title}
+                </CardList>
+                <CardList noBg={1}>
+                  <FaArrowAltCircleDown />
+                </CardList>
+              </>
+           ))}
+            <CardList >
+              {destionation.label} (Destination)
+            </CardList>
+          </div>
+        </Box>
+      </FlexBox>
     )
   }
 
   render() {
+    const { routes } = this.props;
+    const { destinationIndex, destionation }  = this.state;
     return (
       <div>
-        {this.getRootUI()}
-        {/* <LoginBox>
-          <LoginHeader>
-            <div className="brand">
-              <BrandLogo />
-              Create your <b>Resume Maker</b> Account
+        <FlexBox>
+          <Box>
+            <div className="header-box"> 
+              California-Northern Public Transport
             </div>
-          </LoginHeader>
-          {this.getLoginUI()}
-          <div className="signUpText">
-            Already a member? click <span onClick={() => this.changeRoute('/login')}>here</span> to login.
-          </div>
-        </LoginBox> */}
+            <div className="margin-top-drop">
+              <div className="agency">
+                (Agency: San Francisco Muni)
+              </div>
+            </div>
+            <div className="margin-top-drop">
+              <div className="title">From</div>
+              {this.getDropdownUI('from', routes, 'Start Point')}
+            </div>
+            <div className="margin-top-drop">
+              <div className="title">Stop Point<span>(Optional)</span></div>
+              {this.getDropdownUI('stop', routes, 'stop Point')}
+            </div>
+            <div className="button-wrapper">
+              <Button onClick={() => this.submit()}>
+                Search List Of Destination
+              </Button>
+            </div>
+            <div className="margin-top-drop">
+              {this.getDestionationDropUI()}
+            </div>
+          </Box>
+        </FlexBox>
+        { destinationIndex >= 0 && destionation && destionation.label && this.getRouteUI() }
       </div>
     )
   }
 }
 
-const mapDistpatchToProps = (dispatch) => ({
-  registerAction: (data) => dispatch(fetchRegisterAPI(data))
+const mapStateToProps = (state) => ({
+  routes: state.transport.routes,
+  listOfDestination: state.transport.listOfDestination,
+  calledAPI: state.transport.calledAPI,
+  waitForDest: state.transport.waitForDest
 })
 
-export default connect(null, mapDistpatchToProps)(MainPage);
+const mapDistpatchToProps = (dispatch) => ({
+  fetchRouteAPI: () => dispatch(fetchRouteAPI()),
+  fetchDirectionsAPI: (data) => dispatch(fetchDirectionsAPI(data))
+})
+
+export default connect(mapStateToProps, mapDistpatchToProps)(MainPage);

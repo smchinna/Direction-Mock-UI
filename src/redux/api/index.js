@@ -1,10 +1,13 @@
 import { http } from '../http';
 
 const apiCall = (method, url, options) => {
+  var config = {
+    headers: {'Access-Control-Allow-Origin': '*'}
+};
   switch (method) {
     case 'GET':
       return http
-        .get(url, options)
+        .get(url, options, config)
         .then(response => response)
         .catch(error => ({ error }));
     case 'POST':

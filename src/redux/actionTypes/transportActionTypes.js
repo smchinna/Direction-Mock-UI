@@ -1,0 +1,8 @@
+/**TRANSPORT */
+export const FETCH_ROUTES = 'FETCH_ROUTES';
+export const SAVE_ROUTES = 'SAVE_ROUTES';
+
+export const FETCH_DIRECTIONS = 'FETCH_DIRECTIONS';
+export const SAVE_DIRECTIONS = 'SAVE_DIRECTIONS';
+
+export const WAIT_LOADER = 'WAIT_LOADER'
